@@ -1,0 +1,3 @@
+.vs/
+hashTabel.opensdf
+hashtabel.sdf
