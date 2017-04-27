@@ -8,9 +8,18 @@ class EngWord
 {
 private:
 	// membervariables
+	std::string word;
+
 public:
-	EngWord(const std::string &word);
-	~EngWord();
+	EngWord(const std::string &word) {
+		this->word = word;
+	}
+	~EngWord(){
+	}
+
+	std::string getWord() const {
+		return word;
+	}
 
 	bool operator==(const EngWord & otherObj);
 	bool operator!=(const EngWord & otherObj);
