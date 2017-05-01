@@ -29,10 +29,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tempTest.cpp">
+    <ClCompile Include="TestingHashTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestingHashTable.cpp">
+    <ClCompile Include="HashingEnglishWords.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

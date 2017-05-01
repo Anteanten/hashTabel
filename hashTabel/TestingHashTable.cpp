@@ -57,5 +57,8 @@ int main()
 	{
 		cout << "123456 is allready in the table and can not be duplicated" << endl;
 	}
+	
+	getchar();
+
 	return 0;
 }

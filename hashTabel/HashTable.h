@@ -1,7 +1,7 @@
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
-enum State {FREE, USED, REMOVED };
+enum State {FREE, USED, REMOVED};
 
 template <typename HashElement>
 class HashTable
@@ -13,8 +13,8 @@ private:
 	public:
 		State state;
 		HashElement data;
-		Element() {
-			data = nullptr;
+		Element(){
+			state = FREE;
 		}
 	};
 
@@ -23,8 +23,6 @@ private:
 
 	int hashTableSize;
 	int nrOfElements;
-
-	int findTarget(int index, HashElement target);
 
 	unsigned int myHash(const HashElement& elem) const 
 	{ 
@@ -50,21 +48,12 @@ public:
 #endif
 
 template<typename HashElement>
-inline int HashTable<HashElement>::findTarget(int index, HashElement target) {
-	int returnIndex = -1;
-	if (elements[index]->state == USED) {
-		returnIndex = findFree(index + 1);
-	}
-	return returnIndex;
-}
-
-template<typename HashElement>
 inline HashTable<HashElement>::HashTable(int hashTableSize){
 	this->hashTableSize = hashTableSize;
 	nrOfElements = 0;
 	elements = new Element*[this->hashTableSize];
 	for (int i = 0; i < hashTableSize; i++) {
-		elements[i] = nullptr;
+		elements[i] = new Element();
 	}
 }
 
@@ -79,22 +68,32 @@ inline HashTable<HashElement>::~HashTable(){
 template<typename HashElement>
 inline int HashTable<HashElement>::contains(const HashElement & elem) const{
 	int index = myHash(elem);
-	if(elements[index]->data == elem)
+	int target = -1;
+	while (elements[index]->state != FREE && target == -1) {
+		if (elements[index]->data == elem) {
+			target = index;
+		}
+		index++;
+		if (index == hashTableSize) {
+			index = 0;
+		}
+	}
 
-	return 0;
+	return target;
 }
 
 template<typename HashElement>
 inline bool HashTable<HashElement>::insert(const HashElement & elem) {
 	bool inserted = false;
 	int index = myHash(elem);
-	if (!contains(elem)) {
-		if (elements[index]->state != USED) {
-			inserted = true;
-		} else {
-			index = findFree(index);
-			inserted = true;
+	if (contains(elem) == -1) {
+		while (elements[index]->state != FREE) {
+			index++;
+			if (index == hashTableSize) {
+				index = 0;
+			}
 		}
+		inserted = true;	
 		if (inserted) {
 			elements[index]->data = elem;
 			elements[index]->state = USED;
@@ -109,7 +108,6 @@ inline bool HashTable<HashElement>::remove(const HashElement & elem){
 	bool removed = false;
 	int index = contains(elem);
 	if(index != -1){
-		//elements[index]->data = nullptr;
 		elements[index]->state = REMOVED;
 		removed = true;
 	}
@@ -128,8 +126,15 @@ inline const HashElement & HashTable<HashElement>::get(int index) const{
 }
 
 template<typename HashElement>
+inline void HashTable<HashElement>::makeEmpty() {
+	for (int i = 0; i < hashTableSize; i++) {
+		elements[i]->state = FREE;
+	}
+}
+
+template<typename HashElement>
 inline double HashTable<HashElement>::loadFactor() const {
-	return nrOfElements/hashTableSize;
+	return ((double)nrOfElements/(double)hashTableSize);
 }
 
 template<typename HashElement>
